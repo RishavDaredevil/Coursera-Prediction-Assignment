@@ -143,6 +143,39 @@ confusionMatrix(predict(final_model,data = scaledtraing)$predictions,
 
 My out of sample error estimate is **`r estout_samp_error`**
 
+```{r}
+testing <- tibble(testing)
+testing <- tibble(testing)
+dim(testing)
+unique(testing$classe)
+datespl <- strsplit(x = testing$cvtd_timestamp,split = ' ')
+testing$time <- sapply(datespl,FUN = function(x){x[2]} )
+testing$time <- hm(testing$time)
+testing$date <- sapply(datespl,FUN = function(x){x[1]} )
+testing$date <- dmy(testing$date)
+testing$cvtd_timestamp <- dmy_hm(testing$cvtd_timestamp)
+index <- -c(3,4,5,6,7,161,162)
+subtraiin <- testing[,index]
+dim(subtraiin)
+subtraiin <- subtraiin[,c(1,2,155,3:154)]
+subtraiin$user_name <- factor(subtraiin$user_name)
+ttesting <- sapply(subtraiin,FUN = function(x){
+    countt <- 0
+    for (i in 1:length(x)) {
+        if (is.na(x[i])==TRUE) {
+            x[i] <- 0
+            countt <- countt + 1
+        }
+    }
+    as.numeric(x)
+    x
+})
+ttesting <- ttesting[,-index2]
+ttesting <- tibble(as.data.frame(ttesting))
+scaledtesting <- as.data.frame(scale(ttesting[,-c(1,2)]))
+testing$classe <- predict(final_model,data = scaledtesting)$predictions
+```
+
 \
 In the provided R code, the analysis involves building a decision tree classification model using the training data and evaluating its performance using cross-validation. The model is then applied to the testing data for prediction. Here is a detailed description of the analysis and results:
 
